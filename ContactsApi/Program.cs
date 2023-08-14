@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureDataBaseContext(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(MapInitializer));
 builder.Services.ResolveDependencyInjection();
+builder.Services.AddAuthentication();
+builder.Services.ConfigureIdentity();
 
 var logger = new LoggerConfiguration()
   .ReadFrom.Configuration(builder.Configuration)
@@ -31,6 +33,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

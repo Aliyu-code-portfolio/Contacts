@@ -20,13 +20,13 @@ public ContactRepository(AppDbContext appDbContext):base(appDbContext)
 
         public async Task<IEnumerable<Contact>> GetAllContacts()
         {
-            return await _contacts.Include(c=>c.User).ToListAsync();
+            return await _contacts.ToListAsync();
         }
 
         public async Task<Contact> GetContactByEmail(string email)
         {
             return await _contacts.Where(c => c.Email.Contains(email, StringComparison.InvariantCultureIgnoreCase))
-                .Include(c => c.User).FirstOrDefaultAsync();
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Contact> GetContactById(int id)

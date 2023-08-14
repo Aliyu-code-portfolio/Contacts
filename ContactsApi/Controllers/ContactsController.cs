@@ -1,6 +1,6 @@
 ﻿using Contacts.Application.Services.Abstraction;
 using Contacts.Application.Services.Implementation;
-using Contacts.Domain.Dtos.Response;
+using Contacts.Domain.Dtos.Request;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -25,7 +25,6 @@ namespace ContactsApi.Controllers
             return Ok(result);
         }
 
-        // GET api/<UsersController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetContactById(int id)
         {

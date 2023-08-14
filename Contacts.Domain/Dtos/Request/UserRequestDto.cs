@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace Contacts.Domain.Dtos.Request
 {
-    public class UserResponseDto
+    public class UserRequestDto
     {
-        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateOnly Birthday { get; set; }
+        //public DateOnly Birthday { get; set; }
         public string Email { get; set; }
+        public string Password { get; set; }
         public string PhoneNumber { get; set; }
+        public string Role { get; set; }
     }
 }
