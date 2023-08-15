@@ -10,6 +10,7 @@ builder.Services.AddAutoMapper(typeof(MapInitializer));
 builder.Services.ResolveDependencyInjection();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration);
 
 var logger = new LoggerConfiguration()
   .ReadFrom.Configuration(builder.Configuration)

@@ -1,5 +1,6 @@
 ﻿using Contacts.Application.Services.Abstraction;
 using Contacts.Domain.Dtos.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,6 +18,7 @@ namespace ContactsApi.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -25,13 +27,14 @@ namespace ContactsApi.Controllers
         }
 
         // GET api/<UsersController>/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var result = await _userService.GetUserById(id);
             return Ok(result);
         }
-        
+        [Authorize]
         [HttpGet("email/{email}")]
         public async Task<IActionResult> GetUserById(string email)
         {
@@ -39,15 +42,8 @@ namespace ContactsApi.Controllers
             return Ok(result);
         }
 
-        // POST api/<UsersController>
-        [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] UserRequestDto requestDto)
-        {
-            var result = await _userService.CreateUser(requestDto);
-            return Ok(result);
-        }
-
         // PUT api/<UsersController>/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UserRequestDto requestDto)
         {
@@ -56,6 +52,7 @@ namespace ContactsApi.Controllers
         }
 
         /////////
+        [Authorize(Roles ="User")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> UploadProfileImg(int id, [FromBody] UserRequestDto requestDto)
         {
@@ -64,6 +61,7 @@ namespace ContactsApi.Controllers
         }
         /////////
         // DELETE api/<UsersController>/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {

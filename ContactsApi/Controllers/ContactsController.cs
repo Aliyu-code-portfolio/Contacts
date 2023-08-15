@@ -1,6 +1,7 @@
 ﻿using Contacts.Application.Services.Abstraction;
 using Contacts.Application.Services.Implementation;
 using Contacts.Domain.Dtos.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,6 +19,7 @@ namespace ContactsApi.Controllers
             _contactService = contactService;
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllContacts()
         {
@@ -25,6 +27,7 @@ namespace ContactsApi.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetContactById(int id)
         {
@@ -32,6 +35,7 @@ namespace ContactsApi.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet("email/{email}")]
         public async Task<IActionResult> GetContactById(string email)
         {
@@ -40,6 +44,7 @@ namespace ContactsApi.Controllers
         }
 
         // POST api/<UsersController>
+        [Authorize(Roles ="Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateContact([FromBody] ContactRequestDto requestDto)
         {
@@ -48,6 +53,7 @@ namespace ContactsApi.Controllers
         }
 
         // PUT api/<UsersController>/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateContact(int id, [FromBody] ContactRequestDto requestDto)
         {
@@ -56,6 +62,7 @@ namespace ContactsApi.Controllers
         }
 
         // DELETE api/<UsersController>/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContact(int id)
         {

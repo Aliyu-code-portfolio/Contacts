@@ -18,7 +18,7 @@ namespace ContactsApi.Controllers
         }
 
         // POST api/<AuthenticationController>
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserRequestDto requestDto)
         {
            var result =await _authenticationService.RegisterUser(requestDto);
@@ -32,11 +32,15 @@ namespace ContactsApi.Controllers
             }
             return StatusCode(201);
         }
-        
-        /*[HttpPost]
-        public Task<IActionResult> LoginUser([FromBody] UserRequestDto requestDto)
-        {
 
-        }*/
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginUser([FromBody] UserLoginDto requestDto)
+        {
+            if(!await _authenticationService.ValidateUser(requestDto))
+            {
+                return Unauthorized();
+            }
+            return Ok(new { token = await _authenticationService.CreateToken() });
+        }
     }
 }

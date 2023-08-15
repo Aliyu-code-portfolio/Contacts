@@ -11,5 +11,7 @@ namespace Contacts.Application.Services.Abstraction
     public interface IAuthenticationService
     {
         Task<IdentityResult> RegisterUser(UserRequestDto userRequestDto);
+        Task<bool> ValidateUser(UserLoginDto userLoginDto);
+        Task<string> CreateToken();
     }
 }
