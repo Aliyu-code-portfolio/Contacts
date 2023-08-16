@@ -12,6 +12,7 @@ builder.Services.ConfigureImageService();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJWT(builder.Configuration);
+builder.Services.ConfigureSwaggerAuth();
 
 var logger = new LoggerConfiguration()
   .ReadFrom.Configuration(builder.Configuration)

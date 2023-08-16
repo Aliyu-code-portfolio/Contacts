@@ -1,8 +1,10 @@
 ﻿using Contacts.Application.Services.Abstraction;
 using Contacts.Application.Services.Implementation;
 using Contacts.Domain.Dtos.Request;
+using Contacts.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,10 +23,11 @@ namespace ContactsApi.Controllers
 
         [Authorize(Roles ="Admin")]
         [HttpGet]
-        public async Task<IActionResult> GetAllContacts()
+        public async Task<IActionResult> GetAllContacts([FromQuery] ContactRequestInputParameter parameter)
         {
-            var result = await _contactService.GetAllContacts();
-            return Ok(result);
+            var result = await _contactService.GetAllContacts(parameter);
+            Response.Headers.Add("X-Pagination",JsonSerializer.Serialize(result.Data.pagingData));
+            return Ok(result.Data.contacts);
         }
 
         [Authorize]

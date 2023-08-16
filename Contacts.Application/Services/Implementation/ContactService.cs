@@ -4,6 +4,8 @@ using Contacts.Domain.Dtos.Request;
 using Contacts.Domain.Dtos.Response;
 using Contacts.Domain.Models;
 using Contacts.Infrastructure.Repositories.UOW.Abstraction;
+using Contacts.Shared.RequestParameter.Common;
+using Contacts.Shared.RequestParameter.ModelParameters;
 using Microsoft.Extensions.Logging;
 
 namespace Contacts.Application.Services.Implementation
@@ -45,11 +47,11 @@ namespace Contacts.Application.Services.Implementation
             return StandardResponse<ContactResponseDto>.Success($"Successfully deleted a user {contact.FirstName}", contactDto, 200);
         }
 
-        public async Task<StandardResponse<IEnumerable<ContactResponseDto>>> GetAllContacts()
+        public async Task<StandardResponse<(IEnumerable<ContactResponseDto>,MetaData)>> GetAllContacts(ContactRequestInputParameter parameter)
         {
-            var contacts = await _unitOfWork.ContactRepository.GetAllContacts();
-            var contactsDtos = _mapper.Map<IEnumerable<ContactResponseDto>>(contacts);
-            return StandardResponse<IEnumerable<ContactResponseDto>>.Success("Successfully retrieved all contacts", contactsDtos, 200); 
+            var result = await _unitOfWork.ContactRepository.GetAllContacts(parameter);
+            var contactsDtos = _mapper.Map<IEnumerable<ContactResponseDto>>(result);
+            return StandardResponse<(IEnumerable<ContactResponseDto>, MetaData)>.Success("Successfully retrieved all contacts",(contactsDtos,result.MetaData), 200); 
         }
 
         public async Task<StandardResponse<ContactResponseDto>> GetContactByEmail(string email)

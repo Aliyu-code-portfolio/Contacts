@@ -17,10 +17,10 @@ namespace Contacts.Application.Services.Implementation
         {
             Configuration = configuration;
             _cloudinarySettings = new();
-            var jwtSettings = Configuration.GetSection("CloudinarySettings");
-            _cloudinarySettings.CloudName =jwtSettings["CloudName"];
-            _cloudinarySettings.ApiKey = jwtSettings["ApiKey"];
-            _cloudinarySettings.ApiSecret = jwtSettings["ApiSecret"];
+            var cloudinarySettings = Configuration.GetSection("CloudinarySettings");
+            _cloudinarySettings.CloudName =cloudinarySettings["CloudName"];
+            _cloudinarySettings.ApiKey = cloudinarySettings["ApiKey"];
+            _cloudinarySettings.ApiSecret = cloudinarySettings["ApiSecret"];
             Account account = new Account(_cloudinarySettings.CloudName
                 , _cloudinarySettings.ApiKey, _cloudinarySettings.ApiSecret
                 );

@@ -1,6 +1,8 @@
 ﻿using Contacts.Domain.Models;
 using Contacts.Infrastructure.Persistence;
 using Contacts.Infrastructure.Repositories.Abstraction;
+using Contacts.Shared.RequestParameter.Common;
+using Contacts.Shared.RequestParameter.ModelParameters;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,9 +20,16 @@ public ContactRepository(AppDbContext appDbContext):base(appDbContext)
             _contacts = appDbContext.Set<Contact>();
         }
 
-        public async Task<IEnumerable<Contact>> GetAllContacts()
+        public async Task<PagedList<Contact>> GetAllContacts(ContactRequestInputParameter parameter)
         {
-            return await _contacts.ToListAsync();
+            var result = await _contacts.Where(u => u.FirstName.ToLower()
+            .Contains(parameter.SearchTerm.ToLower())
+            || u.LastName.ToLower().Contains(parameter.SearchTerm.ToLower())
+            ||u.Email.ToLower().Contains(parameter.SearchTerm.ToLower()))
+                .Skip((parameter.PageNumber-1)*parameter.PageSize)
+                .Take(parameter.PageSize).ToListAsync();
+            var count = await _contacts.CountAsync();
+            return new PagedList<Contact>(result, count,parameter.PageNumber,parameter.PageSize);
         }
 
         public async Task<Contact> GetContactByEmail(string email)

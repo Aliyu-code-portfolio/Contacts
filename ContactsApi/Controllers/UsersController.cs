@@ -1,7 +1,9 @@
 ﻿using Contacts.Application.Services.Abstraction;
 using Contacts.Domain.Dtos.Request;
+using Contacts.Shared.RequestParameter.ModelParameters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,12 +20,13 @@ namespace ContactsApi.Controllers
             _userService = userService;
         }
 
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles ="Admin")]
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers([FromQuery] UserRequestInputParameter parameter)
         {
-            var result = await _userService.GetAllUsers();
-            return Ok(result);
+            var result = await _userService.GetAllUsers(parameter);
+            Response.Headers.Add("X-Pagination",JsonSerializer.Serialize(result.Data.pagingData));
+            return Ok(result.Data.users);
         }
 
         // GET api/<UsersController>/5
@@ -41,7 +44,7 @@ namespace ContactsApi.Controllers
             var result = await _userService.GetUserByEmail(email);
             return Ok(result);
         }
-       // [Authorize]
+        [Authorize]
         [HttpPost("{id}/image")]
         public IActionResult UploadProfilePic(string id, IFormFile file )
         {
