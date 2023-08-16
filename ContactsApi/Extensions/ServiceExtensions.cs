@@ -62,5 +62,6 @@ namespace ContactsApi.Extensions
                 };
             });
         }
+        public static void ConfigureImageService(this IServiceCollection services)=>services.AddScoped<IPhotoService,PhotoService>();
     }
 }

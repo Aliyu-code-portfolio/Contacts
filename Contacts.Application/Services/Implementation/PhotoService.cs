@@ -3,12 +3,8 @@ using CloudinaryDotNet.Actions;
 using Contacts.Application.Services.Abstraction;
 using Contacts.Domain.Dtos.Request;
 using Contacts.Domain.SharedModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Contacts.Application.Services.Implementation
 {
@@ -20,20 +16,36 @@ namespace Contacts.Application.Services.Implementation
         public PhotoService(IConfiguration configuration)
         {
             Configuration = configuration;
-            _cloudinarySettings.CloudName = Configuration.GetSection("CloudinarySettings")["CloudName"];
-            _cloudinarySettings.ApiKey = Configuration.GetSection("CloudinarySettings")["ApiKey"];
-            _cloudinarySettings.ApiSecret = Configuration.GetSection("CloudinarySettings")["ApiSecret"];
+            _cloudinarySettings = new();
+            var jwtSettings = Configuration.GetSection("CloudinarySettings");
+            _cloudinarySettings.CloudName =jwtSettings["CloudName"];
+            _cloudinarySettings.ApiKey = jwtSettings["ApiKey"];
+            _cloudinarySettings.ApiSecret = jwtSettings["ApiSecret"];
             Account account = new Account(_cloudinarySettings.CloudName
                 , _cloudinarySettings.ApiKey, _cloudinarySettings.ApiSecret
                 );
             _cloudinary = new Cloudinary(account);
         }
 
-        public string AddPhotoForUser(int userId, PhotoRequestDto photoRequestDto)
+        public string AddPhotoForUser(string userId, IFormFile file)
         {
-            var file = photoRequestDto.File;
             var uploadResult = new ImageUploadResult();
-            throw new NotImplementedException();
+            if(file.Length > 0)
+            {
+                using (var stream = file.OpenReadStream())
+                {
+                    var uploadParams = new ImageUploadParams()
+                    {
+                        File = new FileDescription(file.Name, stream)
+                    };
+                    uploadResult = _cloudinary.Upload(uploadParams);
+                }
+            }
+            string url = uploadResult.Url.ToString();
+            string publicId = uploadResult.PublicId;//work with this next time
+
+            return url;
         }
     }
 }
+

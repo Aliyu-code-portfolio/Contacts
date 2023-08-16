@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureDataBaseContext(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(MapInitializer));
 builder.Services.ResolveDependencyInjection();
+builder.Services.ConfigureImageService();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJWT(builder.Configuration);

@@ -4,6 +4,7 @@ using Contacts.Domain.Dtos.Request;
 using Contacts.Domain.Dtos.Response;
 using Contacts.Domain.Models;
 using Contacts.Infrastructure.Repositories.UOW.Abstraction;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Contacts.Application.Services.Implementation
@@ -13,12 +14,14 @@ namespace Contacts.Application.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<UserService> _logger;
+        private readonly IPhotoService _photoService;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UserService> logger)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UserService> logger, IPhotoService photoService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _photoService = photoService;
         }
 
         public async Task<StandardResponse<UserResponseDto>> CreateUser(UserRequestDto userRequestDto)
@@ -33,7 +36,7 @@ namespace Contacts.Application.Services.Implementation
             return StandardResponse<UserResponseDto>.Success("User created successfully", userDto, 201);
         }
 
-        public async Task<StandardResponse<UserResponseDto>> DeleteUser(int id)
+        public async Task<StandardResponse<UserResponseDto>> DeleteUser(string id)
         {
             _logger.LogInformation($"Checking if user with id {id} exists");
             var user =await _unitOfWork.UserRepository.GetUserById(id);
@@ -62,14 +65,19 @@ namespace Contacts.Application.Services.Implementation
             return StandardResponse<UserResponseDto>.Success("Successfully retrieved a user", userDto, 200);
         }
 
-        public async Task<StandardResponse<UserResponseDto>> GetUserById(int id)
+        public async Task<StandardResponse<UserResponseDto>> GetUserById(string id)
         {
             var user = await _unitOfWork.UserRepository.GetUserById(id);
             var userDto = _mapper.Map<UserResponseDto>(user);
             return StandardResponse<UserResponseDto>.Success("Successfully retrieved a user", userDto, 200);
         }
 
-        public async Task<StandardResponse<UserResponseDto>> UpdateUser(int id, UserRequestDto userRequestDto)
+        public Task<StandardResponse<UserResponseDto>> UpdateProfilePicUser(UserRequestDto userRequestDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<StandardResponse<UserResponseDto>> UpdateUser(string id, UserRequestDto userRequestDto)
         {
             var userExists =await _unitOfWork.UserRepository.GetUserById(id);
             if (userExists is null)
@@ -84,9 +92,21 @@ namespace Contacts.Application.Services.Implementation
             return StandardResponse<UserResponseDto>.Success($"Successfully deleted a user {user.FirstName}", userDto, 200);
         }
 
-        public Task UploadProfileImage(FileStream file)
+        public async Task<StandardResponse<(bool,string)>> UploadProfileImage(string userId, IFormFile file)
         {
-            throw new NotImplementedException();
+            var user = await _unitOfWork.UserRepository.GetUserById(userId);
+            if (user is null)
+            {
+                _logger.LogWarning($"No user with id {userId}");
+                return StandardResponse<(bool, string)>.Failed("No user found",  406);
+            }
+            string url = _photoService.AddPhotoForUser(userId, file);
+            if(string.IsNullOrWhiteSpace(url))
+                return StandardResponse<(bool, string)>.Failed("Failed to upload", 500);
+            user.ImageURL= url;
+            _unitOfWork.UserRepository.Update(user);
+            await _unitOfWork.SaveAsync();
+            return StandardResponse<(bool, string)>.Success("Successfully uploaded image", (false,url), 204);
         }
     }
 }

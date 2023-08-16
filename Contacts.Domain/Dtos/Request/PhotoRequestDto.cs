@@ -9,7 +9,7 @@ namespace Contacts.Domain.Dtos.Request
 {
     public class PhotoRequestDto
     {
-        public string Url { get; set; }
+        /*public string Url { get; set; }*/
         public IFormFile File { get; set; }
     }
 }

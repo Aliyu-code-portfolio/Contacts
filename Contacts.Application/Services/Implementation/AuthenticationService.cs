@@ -32,14 +32,14 @@ namespace Contacts.Application.Services.Implementation
             _config = config;
         }
 
-        public async Task<IdentityResult> RegisterUser(UserRequestDto userRequestDto)
+        public async Task<IdentityResult> RegisterUser(UserRequestDto userRequestDto, string role)
         {
             var user = _mapper.Map<User>(userRequestDto);
             user.UserName = user.Email;
             var result = await _userManager.CreateAsync(user, userRequestDto.Password);
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, userRequestDto.Role);
+                await _userManager.AddToRoleAsync(user,role);
             }
             return result;
         }

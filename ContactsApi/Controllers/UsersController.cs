@@ -18,7 +18,7 @@ namespace ContactsApi.Controllers
             _userService = userService;
         }
 
-        [Authorize(Roles ="Admin")]
+        //[Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -29,41 +29,52 @@ namespace ContactsApi.Controllers
         // GET api/<UsersController>/5
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        public async Task<IActionResult> GetUserById(string id)
         {
             var result = await _userService.GetUserById(id);
             return Ok(result);
         }
         [Authorize]
         [HttpGet("email/{email}")]
-        public async Task<IActionResult> GetUserById(string email)
+        public async Task<IActionResult> GetUserByEmail(string email)
         {
             var result = await _userService.GetUserByEmail(email);
             return Ok(result);
+        }
+       // [Authorize]
+        [HttpPost("{id}/image")]
+        public IActionResult UploadProfilePic(string id, IFormFile file )
+        {
+            var result = _userService.UploadProfileImage(id, file);
+            if(result.Result.Succeeded)
+            {
+                return Ok(new { ImageUrl = result.Result.Data.Item2 });
+            }
+            return NotFound();
         }
 
         // PUT api/<UsersController>/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserRequestDto requestDto)
+        public async Task<IActionResult> UpdateUser(string id, [FromBody] UserRequestDto requestDto)
         {
             var result = await _userService.UpdateUser(id, requestDto);
             return Ok(result);
         }
 
         /////////
-        [Authorize(Roles ="User")]
+        /*[Authorize(Roles ="User")]
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UploadProfileImg(int id, [FromBody] UserRequestDto requestDto)
+        public async Task<IActionResult> UploadProfileImg(string id, [FromBody] UserRequestDto requestDto)
         {
             var result = await _userService.UpdateUser(id, requestDto);
             return Ok(result);
-        }
+        }*/
         /////////
         // DELETE api/<UsersController>/5
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(string id)
         {
             var result = await _userService.DeleteUser(id);
             return Ok(result);

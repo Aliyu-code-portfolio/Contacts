@@ -24,7 +24,7 @@ namespace Contacts.Infrastructure.Repositories.Implementation
             return await users.Where(u=>u.Email.Contains(email,StringComparison.InvariantCultureIgnoreCase)).FirstOrDefaultAsync();
         }
 
-        public async Task<User> GetUserById(int id)
+        public async Task<User> GetUserById(string id)
         {
             return await users.FindAsync(id);
         }

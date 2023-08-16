@@ -10,7 +10,7 @@ namespace Contacts.Application.Services.Abstraction
 {
     public interface IAuthenticationService
     {
-        Task<IdentityResult> RegisterUser(UserRequestDto userRequestDto);
+        Task<IdentityResult> RegisterUser(UserRequestDto userRequestDto, string role);
         Task<bool> ValidateUser(UserLoginDto userLoginDto);
         Task<string> CreateToken();
     }
