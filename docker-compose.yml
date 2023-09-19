@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  contactsapi:
+    image: ${DOCKER_REGISTRY-}contactsapi
+    build:
+      context: .
+      dockerfile: ContactsApi/Dockerfile

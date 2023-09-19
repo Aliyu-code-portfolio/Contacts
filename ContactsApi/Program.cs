@@ -33,7 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseRouting();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

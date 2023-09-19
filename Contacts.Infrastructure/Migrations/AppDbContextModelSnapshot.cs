@@ -30,9 +30,6 @@ namespace Contacts.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Birthday")
-                        .HasColumnType("date");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -68,8 +65,8 @@ namespace Contacts.Infrastructure.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Birthday")
-                        .HasColumnType("date");
+                    b.Property<DateTime?>("Birthday")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -90,7 +87,6 @@ namespace Contacts.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageURL")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
@@ -175,15 +171,15 @@ namespace Contacts.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1f7180cb-77f9-44c0-811b-c2f46514dd31",
-                            ConcurrencyStamp = "64dc810f-031c-44ed-b428-9c3e0a06392c",
+                            Id = "d89dbe84-57ef-4438-b925-a8d1231b33ad",
+                            ConcurrencyStamp = "13645a16-cd16-47cc-b518-05ca81c42578",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "007bf220-d3fe-42bd-83a3-4fb7e45eee41",
-                            ConcurrencyStamp = "63e68b50-38da-49aa-8143-14b3a2e5a3db",
+                            Id = "a4ccc2b3-e428-4794-853c-c366ab104e33",
+                            ConcurrencyStamp = "d3fb0b0e-1b5e-4cf6-add8-1274b9f98c0a",
                             Name = "User",
                             NormalizedName = "USER"
                         });
